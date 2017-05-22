@@ -39,33 +39,33 @@ io.sockets.on('connection',function(socket){
 
 
       clients[socket.id] ={
-              x:null,
-              y:null
+              x:0,
+             y:0
         };
 
            updateList();
 
-          //  socket.broadcast.emit('new user',{userId:socket.id,numberOfUsers:numberUsers});
-   io.sockets.emit('new user',{userId:clients,SID:socket.id,numberOfUsers:numberUsers});
-            socket.emit('renderAll',clients);
-         // io.sockets.emit('renderAll',clients);
+           // socket.broadcast.emit('new user',{userId:socket.id,numberOfUsers:numberUsers});
+   //io.sockets.emit('new user',{userId:clients,SID:socket.id,numberOfUsers:numberUsers});
+           // socket.emit('renderAll',clients);
+          socket.emit('new user',socket.id,clients);
+
     console.log("--------------------------->");
-    console.log( clients )
+
         //}
 
 
 
     socket.on('UserCursorPositions',function(data,callback){
 
-      clients[socket.id].x=data.x;
-      clients[socket.id].y=data.y;
-     // ConnectedUser[socket.clients]=clients;
-       // io.sockets.emit('renderObject',clients);
-      io.sockets.emit('renderObject',data);
-        callback(true);
+            clients[socket.id].x=data.x;
+            clients[socket.id].y=data.y;
+            clients.socketId=socket.id;
 
-
-
+            io.sockets.emit('renderObject',clients);
+            callback(true);
+            console.log("HIER");
+            console.log(clients);
 
     });
 
@@ -75,7 +75,8 @@ io.sockets.on('connection',function(socket){
             numberUsers--;
             console.log(numberUsers);
         updateList();
-        io.sockets.emit('User left',{socketId:socket.id,NumberOfpresentUser:numberUsers});
+       // io.sockets.emit('User left',{socketId:socket.id,NumberOfpresentUser:numberUsers});
+        socket.broadcast.emit('User left',{socketId:socket.id,NumberOfpresentUser:numberUsers});
 
     });
 
